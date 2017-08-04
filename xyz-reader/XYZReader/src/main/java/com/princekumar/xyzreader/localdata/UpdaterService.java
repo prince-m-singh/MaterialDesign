@@ -1,4 +1,4 @@
-package com.example.xyzreader.data;
+package com.princekumar.xyzreader.localdata;
 
 import android.app.IntentService;
 import android.content.ContentProviderOperation;

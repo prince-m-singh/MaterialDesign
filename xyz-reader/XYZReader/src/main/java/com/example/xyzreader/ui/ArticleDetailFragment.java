@@ -32,7 +32,9 @@ import android.widget.TextView;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.example.xyzreader.R;
-import com.example.xyzreader.data.ArticleLoader;
+import com.princekumar.xyzreader.localdata.ArticleLoader;
+import com.princekumar.xyzreader.ui.ArticleDetailActivity;
+import com.princekumar.xyzreader.ui.ArticleListActivity;
 
 /**
  * A fragment representing a single Article detail screen. This fragment is
@@ -129,7 +131,7 @@ public class ArticleDetailFragment extends Fragment implements
             @Override
             public void onScrollChanged() {
                 mScrollY = mScrollView.getScrollY();
-                getActivityCast().onUpButtonFloorChanged(mItemId, ArticleDetailFragment.this);
+             //   getActivityCast().onUpButtonFloorChanged(mItemId, ArticleDetailFragment.this);
                 mPhotoContainerView.setTranslationY((int) (mScrollY - mScrollY / PARALLAX_FACTOR));
                 updateStatusBar();
             }
