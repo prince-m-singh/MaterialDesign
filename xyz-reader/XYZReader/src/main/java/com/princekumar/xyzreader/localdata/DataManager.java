@@ -60,6 +60,7 @@ public class DataManager {
     public Observable<Article> getArticlesObservableStream() {
         return databaseHelper
                 .getArticlesFromDatabase()
+                .compose(RxUtils.applySchedulers())
                 .flatMap(Observable::fromIterable)
                 .distinct();
 
@@ -69,6 +70,7 @@ public class DataManager {
     public Single<Article> getArticleSingle(int id) {
         return databaseHelper
                 .getSingleArticleFromDatabase(id)
+                .compose(RxUtils.applySchedulers())
                 .firstOrError();
     }
 

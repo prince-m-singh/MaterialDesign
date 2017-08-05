@@ -19,8 +19,11 @@ import com.princekumar.xyzreader.utils.RxUtils;
 
 import javax.inject.Inject;
 
+import butterknife.BindInt;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.Completable;
+import io.reactivex.disposables.Disposable;
 import timber.log.Timber;
 
 /**
@@ -29,10 +32,18 @@ import timber.log.Timber;
  * touched, lead to a {@link ArticleDetailActivity} representing item details. On tablets, the
  * activity presents a grid of items as cards.
  */
-public class ArticleListActivity extends  BaseActivity  implements ArticlesAdapter.OnArticleClickListener {
+public class ArticleListActivity extends  BaseActivity  implements ArticlesAdapter.OnArticleClickListener,SwipeRefreshLayout.OnRefreshListener {
+
+
+
+    private Completable articlesSync;
+    private Disposable articlesSubscribtion;
 
     @Inject
     DataManager dataManager;
+
+    @BindInt(R.integer.list_column_count)
+    int columnsCount;
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -54,6 +65,15 @@ public class ArticleListActivity extends  BaseActivity  implements ArticlesAdapt
         setContentView(R.layout.activity_article_list);
         ButterKnife.bind(this);
 
+        articlesSync = dataManager
+                .syncArticles()
+                .doOnSubscribe(disposable -> Timber.d("Sync started..."))
+                .doOnComplete(() -> Timber.d("Sync completed"));
+
+        if (savedInstanceState == null && articlesSubscribtion == null) {
+            articlesSubscribtion = articlesSync.subscribe();
+        }
+
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
@@ -70,9 +90,7 @@ public class ArticleListActivity extends  BaseActivity  implements ArticlesAdapt
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
 
-        if (savedInstanceState == null) {
-            dataManager.syncArticles().subscribe();
-        }
+        swipeRefreshLayout.setOnRefreshListener(this);
 
         dataManager.getArticlesObservableStream()
                 .doOnSubscribe(disposable -> adapter.clearList())
@@ -92,14 +110,25 @@ public class ArticleListActivity extends  BaseActivity  implements ArticlesAdapt
                     layout.setRefreshing(false);
                     break;
                 case RequestState.ERROR:
+                    layout.setRefreshing(false);
                     break;
             }
         });
     }
 
+
     @Override
     public void articleClicked(int id) {
-        Toast.makeText(this, "Article: " + String.valueOf(id), Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "Article: " + String.valueOf(id), Toast.LENGTH_SHORT).show();
+        startActivity(ArticleDetailActivity.prepareIntent(this, id));
+    }
+
+    @Override
+    public void onRefresh() {
+        if (articlesSubscribtion != null && !articlesSubscribtion.isDisposed()) {
+            articlesSubscribtion.dispose();
+        }
+        articlesSubscribtion = articlesSync.subscribe();
 
     }
 }
