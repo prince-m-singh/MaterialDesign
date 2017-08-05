@@ -66,6 +66,8 @@ dependencies {
     compile rx.rxAndroid
     compile rx.rxJava
     compile rx.rxJavaInterop
+    compile rx.rxRelay
+
 
     // Dagger
     compile dagger.dagger

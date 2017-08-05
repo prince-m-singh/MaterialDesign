@@ -33,5 +33,5 @@ public interface ApplicationComponents {
 
     DatabaseHelper getDatabaseHelper();
 
-    PreferencesHelper getPreferencesHelper();
+   // PreferencesHelper getPreferencesHelper();
 }

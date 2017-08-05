@@ -1,7 +1,9 @@
 package com.princekumar.xyzreader.localdata;
 
+import com.jakewharton.rxrelay2.BehaviorRelay;
 import com.princekumar.xyzreader.datamodel.Article;
 import com.princekumar.xyzreader.remote.ArticlesService;
+import com.princekumar.xyzreader.utils.RequestState;
 import com.princekumar.xyzreader.utils.RxUtils;
 
 import javax.inject.Inject;
@@ -10,6 +12,7 @@ import javax.inject.Singleton;
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 
 
 /**
@@ -20,13 +23,15 @@ import io.reactivex.Single;
 public class DataManager {
     private final ArticlesService articlesService;
     private final DatabaseHelper databaseHelper;
-    private final PreferencesHelper preferencesHelper;
+    private final BehaviorRelay<Integer> requestState;
+   // private final PreferencesHelper preferencesHelper;
 
     @Inject
-    public DataManager(ArticlesService articlesService, DatabaseHelper databaseHelper,PreferencesHelper preferencesHelper) {
+    public DataManager(ArticlesService articlesService, DatabaseHelper databaseHelper, BehaviorRelay<Integer> requestStater) {
         this.articlesService = articlesService;
         this.databaseHelper = databaseHelper;
-        this.preferencesHelper = preferencesHelper;
+        this.requestState=requestStater;
+        //this.preferencesHelper = preferencesHelper;
     }
 
     public Observable<Article> loadArticlesRemote() {
@@ -35,10 +40,20 @@ public class DataManager {
                 .flatMap(Observable::fromIterable);
     }
 
+    private void publishRequestState(@RequestState.State int state) {
+        Observable.just(state)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(requestState);
+    }
+
+
     public Completable syncArticles() {
         return articlesService
                 .loadArticles()
                 .compose(RxUtils.applySchedulers())
+                .doOnSubscribe(disposable -> publishRequestState(RequestState.LOADING))
+                .doOnError(throwable -> publishRequestState(RequestState.ERROR))
+                .doOnComplete(() -> publishRequestState(RequestState.COMPLETED))
                 .flatMapCompletable(databaseHelper::saveArticlesToDatabase);
     }
 
@@ -55,5 +70,9 @@ public class DataManager {
         return databaseHelper
                 .getSingleArticleFromDatabase(id)
                 .firstOrError();
+    }
+
+    public BehaviorRelay<Integer> getRequestState() {
+        return requestState;
     }
 }

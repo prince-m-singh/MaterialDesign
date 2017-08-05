@@ -13,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import com.princekumar.xyzreader.R;
 import com.princekumar.xyzreader.localdata.DataManager;
 import com.princekumar.xyzreader.utils.ArticlesAdapter;
+import com.princekumar.xyzreader.utils.RequestState;
 import com.princekumar.xyzreader.utils.RxUtils;
 
 import javax.inject.Inject;
@@ -59,6 +60,7 @@ public class ArticleListActivity extends  BaseActivity {
 
         StaggeredGridLayoutManager sglm =
                 new StaggeredGridLayoutManager(columnsCount, StaggeredGridLayoutManager.VERTICAL);
+        handleLoadingIndicator(swipeRefreshLayout);
 
         adapter = new ArticlesAdapter();
         adapter.setHasStableIds(true);
@@ -75,5 +77,22 @@ public class ArticleListActivity extends  BaseActivity {
                 .doOnSubscribe(disposable -> adapter.clearList())
                 .doOnNext(article -> Timber.tag("myxyzreader").d("Fetch article from db: " + article.title()))
                 .subscribe(article -> adapter.addArticle(article));
+    }
+
+    private void handleLoadingIndicator(SwipeRefreshLayout layout) {
+        dataManager.getRequestState().subscribe(state -> {
+            switch (state) {
+                case RequestState.IDLE:
+                    break;
+                case RequestState.LOADING:
+                    layout.setRefreshing(true);
+                    break;
+                case RequestState.COMPLETED:
+                    layout.setRefreshing(false);
+                    break;
+                case RequestState.ERROR:
+                    break;
+            }
+        });
     }
 }

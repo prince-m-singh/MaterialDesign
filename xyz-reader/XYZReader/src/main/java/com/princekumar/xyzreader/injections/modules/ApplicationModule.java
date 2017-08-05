@@ -3,9 +3,11 @@ package com.princekumar.xyzreader.injections.modules;
 import android.app.Application;
 import android.content.Context;
 
+import com.jakewharton.rxrelay2.BehaviorRelay;
 import com.princekumar.xyzreader.injections.ApplicationContext;
 import com.princekumar.xyzreader.remote.ArticlesService;
 import com.princekumar.xyzreader.remote.ServiceFactory;
+import com.princekumar.xyzreader.utils.RequestState;
 
 import javax.inject.Singleton;
 
@@ -40,4 +42,9 @@ public class ApplicationModule {
         return ServiceFactory.createFrom(ArticlesService.class, ArticlesService.ENDPOINT);
     }
 
+    @Provides
+    @Singleton
+    BehaviorRelay<Integer> provideBehaviorRelay() {
+        return BehaviorRelay.createDefault(RequestState.IDLE);
+    }
 }
