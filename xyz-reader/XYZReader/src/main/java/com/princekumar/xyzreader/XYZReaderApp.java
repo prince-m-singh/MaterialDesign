@@ -1,8 +1,12 @@
 package com.princekumar.xyzreader;
 
 import android.app.Application;
+import android.content.Context;
 
 import com.facebook.stetho.Stetho;
+import com.princekumar.xyzreader.injections.components.ApplicationComponents;
+import com.princekumar.xyzreader.injections.components.DaggerApplicationComponents;
+import com.princekumar.xyzreader.injections.modules.ApplicationModule;
 
 import timber.log.Timber;
 
@@ -11,6 +15,8 @@ import timber.log.Timber;
  */
 
 public class XYZReaderApp extends Application {
+    private ApplicationComponents applicationComponent;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -30,6 +36,19 @@ public class XYZReaderApp extends Application {
             });
 
             Stetho.initializeWithDefaults(this);
+
+            applicationComponent = DaggerApplicationComponents.builder()
+                    .applicationModule(new ApplicationModule(this))
+                    .build();
+
+            applicationComponent.inject(this);
         }
+    }
+    public static XYZReaderApp get(Context context) {
+        return (XYZReaderApp) context.getApplicationContext();
+    }
+
+    public ApplicationComponents getComponent() {
+        return applicationComponent;
     }
 }

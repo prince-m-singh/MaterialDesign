@@ -8,7 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 /**
  * An activity representing a single Article detail screen, letting you swipe between articles.
  */
-public class ArticleDetailActivity extends AppCompatActivity{
+public class ArticleDetailActivity extends BaseActivity{
 
 
 

@@ -4,6 +4,10 @@ import android.app.Application;
 import android.content.Context;
 
 import com.princekumar.xyzreader.injections.ApplicationContext;
+import com.princekumar.xyzreader.remote.ArticlesService;
+import com.princekumar.xyzreader.remote.ServiceFactory;
+
+import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
@@ -29,4 +33,11 @@ public class ApplicationModule {
     Application provideApplication() {
         return application;
     }
+
+    @Provides
+    @Singleton
+    ArticlesService provideArticlesService() {
+        return ServiceFactory.createFrom(ArticlesService.class, ArticlesService.ENDPOINT);
+    }
+
 }

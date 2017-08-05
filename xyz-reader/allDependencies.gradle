@@ -26,6 +26,7 @@ ext {
     timberVersion = "4.5.1"
     glideVersion = "3.7.0"
     stethoVersion = "1.5.0"
+    rxJavaInteropVersion = "0.10.0"
 
     // Libraries
     supportDependencies = [
@@ -44,6 +45,7 @@ ext {
     rxDependancies = [
             rxAndroid: "io.reactivex.rxjava2:rxandroid:${rxAndroidVersion}",
             rxJava   : "io.reactivex.rxjava2:rxjava:${rxJavaVersion}",
+            rxJavaInterop: "com.github.akarnokd:rxjava2-interop:${rxJavaInteropVersion}",
     ]
 
     daggerDependancies = [
