@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.widget.Toast;
 
 import com.princekumar.xyzreader.R;
 import com.princekumar.xyzreader.localdata.DataManager;
@@ -28,7 +29,7 @@ import timber.log.Timber;
  * touched, lead to a {@link ArticleDetailActivity} representing item details. On tablets, the
  * activity presents a grid of items as cards.
  */
-public class ArticleListActivity extends  BaseActivity {
+public class ArticleListActivity extends  BaseActivity  implements ArticlesAdapter.OnArticleClickListener {
 
     @Inject
     DataManager dataManager;
@@ -62,7 +63,7 @@ public class ArticleListActivity extends  BaseActivity {
                 new StaggeredGridLayoutManager(columnsCount, StaggeredGridLayoutManager.VERTICAL);
         handleLoadingIndicator(swipeRefreshLayout);
 
-        adapter = new ArticlesAdapter();
+        adapter = new ArticlesAdapter(this);
         adapter.setHasStableIds(true);
 
         recyclerView.setLayoutManager(sglm);
@@ -94,5 +95,11 @@ public class ArticleListActivity extends  BaseActivity {
                     break;
             }
         });
+    }
+
+    @Override
+    public void articleClicked(int id) {
+        Toast.makeText(this, "Article: " + String.valueOf(id), Toast.LENGTH_SHORT).show();
+
     }
 }
