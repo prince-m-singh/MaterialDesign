@@ -7,9 +7,10 @@ import com.princekumar.xyzreader.utils.RxUtils;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import io.reactivex.Completable;
 import io.reactivex.Observable;
-import rx.Completable;
-import rx.Single;
+import io.reactivex.Single;
+
 
 /**
  * Created by princ on 05-08-2017.
@@ -44,7 +45,9 @@ public class DataManager {
     public Observable<Article> getArticlesObservableStream() {
         return databaseHelper
                 .getArticlesFromDatabase()
-                .flatMap(Observable::fromIterable);
+                .flatMap(Observable::fromIterable)
+                .distinct();
+
     }
 
 
