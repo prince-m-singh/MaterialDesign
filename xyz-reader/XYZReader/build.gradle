@@ -1,12 +1,16 @@
 buildscript {
     repositories {
         jcenter()
+
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.3.1'
+        classpath 'me.tatarka:gradle-retrolambda:3.7.0'
     }
 }
 apply plugin: 'com.android.application'
+apply plugin: 'me.tatarka.retrolambda'
+
 
 repositories {
     jcenter()
@@ -20,12 +24,27 @@ android {
         minSdkVersion rootProject.ext.androidMinSdkVersion
         targetSdkVersion rootProject.ext.androidTargetSdkVersion
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    packagingOptions {
+        exclude 'META-INF/rxjava.properties'
+    }
 }
 
 dependencies {
     // Lib definitions
     def supportLib = rootProject.ext.supportDependencies
-    def okhttpLib = rootProject.ext.okhttpDependencies
+    def otherSupportingLibs = rootProject.ext.otherSupportingDependencies
+    def rx = rootProject.ext.rxDependancies
+    def dagger = rootProject.ext.daggerDependancies
+    def retrofit = rootProject.ext.retrofitDependancies
+    def butterKnife = rootProject.ext.butterKnifeDependancies
+    def autoValue = rootProject.ext.autoValueDependancies
+    def stetho = rootProject.ext.stethoDependancies
+
 
     compile supportLib.supportV4
     compile supportLib.supportV13
@@ -36,7 +55,39 @@ dependencies {
     compile supportLib.design
 
 
-    // okhttp
-    compile okhttpLib.okhttp
+    // otherSupportingLibs
+    compile otherSupportingLibs.okhttp
+    compile otherSupportingLibs.sqlBriteDependancy
+    compile otherSupportingLibs.moshiDependancy
+    compile otherSupportingLibs.timberDependancy
+    compile otherSupportingLibs.glideDependancy
+
+// Rx
+    compile rx.rxAndroid
+    compile rx.rxJava
+
+    // Dagger
+    compile dagger.dagger
+    annotationProcessor dagger.daggerApt
+
+    // Retrofit
+    compile retrofit.retrofit
+    compile retrofit.rxJavaAdapter
+    compile retrofit.moshiConverter
+
+    // ButterKnife
+    compile butterKnife.butterknife
+    annotationProcessor butterKnife.butterknifeApt
+
+    // AutoValue
+    annotationProcessor autoValue.autoValueApt
+    provided autoValue.autoValueProvided
+    annotationProcessor autoValue.moshiApt
+    provided autoValue.moshiProvided
+
+    // Stetho
+    compile stetho.stetho
+    compile stetho.networkHelper
+
     compile files('libs/volley.jar')
 }
