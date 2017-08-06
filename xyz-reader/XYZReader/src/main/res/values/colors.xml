@@ -22,13 +22,10 @@
     <color name="theme_primary_dark">#04561A</color>
     <color name="theme_accent">#04561A</color>
     <color name="ltgray">#ffe0e0e0</color>
-    <color name="color_primary">#FF5722</color>
-    <color name="color_primary_dark">#E64A19</color>
-    <color name="color_accent">#2979FF</color>
 
-    <color name="colorPrimary">#9c27b0</color>
-    <color name="colorPrimaryDark">#6a0080</color>
-    <color name="colorAccent">#ffab00</color>
+    <color name="colorPrimary">#FF5722</color>
+    <color name="colorPrimaryDark">#E64A19</color>
+    <color name="colorAccent">#2979FF</color>
 
     <color name="material_gray_100">#F5F5F5</color>
     <color name="material_gray_800">#424242</color>

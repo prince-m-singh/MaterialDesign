@@ -121,6 +121,7 @@ public class ArticleListActivity extends  BaseActivity  implements ArticlesAdapt
     public void articleClicked(int id) {
         //Toast.makeText(this, "Article: " + String.valueOf(id), Toast.LENGTH_SHORT).show();
         startActivity(ArticleDetailActivity.prepareIntent(this, id));
+
     }
 
     @Override
